@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Networking Concepts | Aidan Douglas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f9fafb;
+      color: #111827;
+      line-height: 1.6;
+    }
+
+    nav {
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-title { font-weight: 600; font-size: 0.95rem; }
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+    .nav-links a { text-decoration: none; font-size: 0.9rem; color: #6b7280; }
+    .nav-links a:hover, .nav-links a.active { color: #111827; }
+
+    .container { max-width: 820px; margin: 0 auto; padding: 3rem 2rem; }
+
+    .page-header {
+      padding-bottom: 2rem;
+      border-bottom: 1px solid #e5e7eb;
+      margin-bottom: 2.5rem;
+    }
+
+    .page-header h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .page-header p { font-size: 0.95rem; color: #6b7280; max-width: 520px; }
+
+    .concept {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .concept:last-child { border-bottom: none; }
+
+    .concept-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #9ca3af;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .concept h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.9rem; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.75rem; align-items: start; }
+
+    .body-text { font-size: 0.875rem; color: #6b7280; line-height: 1.7; }
+    .body-text + .body-text { margin-top: 0.6rem; }
+
+    /* Terminal */
+    .terminal {
+      background: #1e1e2e;
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 0.78rem;
+    }
+
+    .terminal-bar {
+      background: #2a2a3d;
+      padding: 0.5rem 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .dot { width: 9px; height: 9px; border-radius: 50%; }
+    .dot.r { background: #ff5f57; }
+    .dot.y { background: #febc2e; }
+    .dot.g { background: #28c840; }
+
+    .terminal-label {
+      font-size: 0.65rem;
+      color: #6b7280;
+      margin-left: 0.4rem;
+      font-family: monospace;
+    }
+
+    .terminal-body {
+      padding: 1rem 1.1rem;
+      font-family: 'Courier New', monospace;
+      line-height: 1.75;
+      color: #a8b4c0;
+    }
+
+    .terminal-body .cmd { color: #7dd3a8; }
+    .terminal-body .val { color: #f9c74f; }
+    .terminal-body .cmt { color: #4b5563; }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.825rem;
+    }
+
+    th {
+      text-align: left;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
+      font-weight: 600;
+      padding: 0.6rem 0.75rem;
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    td {
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid #f3f4f6;
+      color: #6b7280;
+      vertical-align: top;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    td:first-child { font-weight: 500; color: #374151; }
+
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .badge.yes { background: #d1fae5; color: #065f46; }
+    .badge.no  { background: #fee2e2; color: #991b1b; }
+
+    /* Info cards (small) */
+    .info-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 1rem; }
+
+    .info-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+    }
+
+    .info-card .label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+    }
+
+    .info-card .value { font-size: 0.85rem; font-weight: 600; color: #374151; margin-bottom: 0.2rem; }
+    .info-card .desc { font-size: 0.78rem; color: #6b7280; line-height: 1.4; }
+
+    footer {
+      border-top: 1px solid #e5e7eb;
+      padding: 1.25rem 2rem;
+      font-size: 0.78rem;
+      color: #9ca3af;
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      .two-col, .info-row { grid-template-columns: 1fr; }
+      .page-header h1 { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <span class="nav-title">CN Project 1</span>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="networking.html" class="active">Networking</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+
+    <div class="page-header">
+      <h1>Networking Concepts</h1>
+      <p>How DNS, IP addressing, HTTP/HTTPS, and security headers work in this deployment.</p>
+    </div>
+
+    <!-- DNS -->
+    <div class="concept">
+      <p class="concept-label">01 · DNS</p>
+      <h2>DNS Resolution</h2>
+      <div class="two-col">
+        <div>
+          <p class="body-text">When you type this site's URL, the browser first performs a DNS lookup — translating the human-readable domain into a numeric IP address. GitHub Pages uses its own nameservers for the <code>github.io</code> subdomain.</p>
+          <p class="body-text">The resolution chain goes: browser cache → ISP's resolver → GitHub's authoritative DNS servers.</p>
+          <div class="info-row">
+            <div class="info-card">
+              <div class="label">Record Type</div>
+              <div class="value">CNAME / A</div>
+              <div class="desc">GitHub Pages uses CNAME for subdomains pointing to github.io</div>
+            </div>
+            <div class="info-card">
+              <div class="label">TTL</div>
+              <div class="value">~3600 seconds</div>
+              <div class="desc">How long resolvers cache the result before re-querying</div>
+            </div>
+          </div>
+        </div>
+        <div class="terminal">
+          <div class="terminal-bar">
+            <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+            <span class="terminal-label">nslookup output</span>
+          </div>
+          <div class="terminal-body">
+<span class="cmt"># nslookup aidandouglas654.github.io</span>
+
+Server:  <span class="val">192.168.1.1</span>
+Address: <span class="val">192.168.1.1#53</span>
+
+Non-authoritative answer:
+Name: <span class="cmd">aidandouglas654.github.io</span>
+Address: <span class="val">185.199.108.153</span>
+Address: <span class="val">185.199.109.153</span>
+Address: <span class="val">185.199.110.153</span>
+Address: <span class="val">185.199.111.153</span>
+
+<span class="cmt"># GitHub Pages CDN IP addresses</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IP -->
+    <div class="concept">
+      <p class="concept-label">02 · IP Addressing</p>
+      <h2>IPv4 & IPv6</h2>
+      <div class="two-col">
+        <div>
+          <p class="body-text">An IP address is the numeric identifier for every device or server on the internet. When DNS resolves this site, it returns GitHub's CDN server IPs — the machines that serve the files to your browser.</p>
+          <p class="body-text">GitHub Pages supports both IPv4 (32-bit) and IPv6 (128-bit). IPv6 was introduced to address the exhaustion of available IPv4 addresses.</p>
+        </div>
+        <table>
+          <thead>
+            <tr><th>Feature</th><th>IPv4</th><th>IPv6</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Size</td><td>32-bit</td><td>128-bit</td></tr>
+            <tr><td>Example</td><td>185.199.108.153</td><td>2606:50c0::153</td></tr>
+            <tr><td>Address space</td><td>~4.3 billion</td><td>340 undecillion</td></tr>
+            <tr><td>GitHub Pages</td><td>✓</td><td>✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- HTTPS -->
+    <div class="concept">
+      <p class="concept-label">03 · Protocols</p>
+      <h2>HTTP vs HTTPS</h2>
+      <div class="two-col">
+        <div>
+          <p class="body-text">HTTPS is HTTP with TLS encryption. Without it, data is transmitted in plaintext and readable by anyone who intercepts it. GitHub Pages automatically provisions a free TLS certificate for all <code>github.io</code> sites and enforces HTTPS by redirecting any plain HTTP request.</p>
+        </div>
+        <table>
+          <thead>
+            <tr><th>Property</th><th>HTTP</th><th>HTTPS</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Port</td><td>80</td><td>443</td></tr>
+            <tr><td>Encrypted</td><td><span class="badge no">No</span></td><td><span class="badge yes">Yes</span></td></tr>
+            <tr><td>Certificate</td><td>Not required</td><td>Required</td></tr>
+            <tr><td>Used here</td><td>—</td><td><span class="badge yes">✓ Enforced</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Headers -->
+    <div class="concept">
+      <p class="concept-label">04 · Headers & Status Codes</p>
+      <h2>HTTP Response Headers</h2>
+      <div class="two-col">
+        <div>
+          <p class="body-text">HTTP headers carry metadata with every request and response — things like content type, caching rules, and security policies. These can be viewed in any browser's DevTools under the Network tab (F12).</p>
+          <p class="body-text">GitHub Pages automatically includes several security headers, including HSTS (which tells browsers to always use HTTPS for this domain).</p>
+        </div>
+        <div class="terminal">
+          <div class="terminal-bar">
+            <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+            <span class="terminal-label">DevTools · Response Headers</span>
+          </div>
+          <div class="terminal-body">
+<span class="cmd">HTTP/2 200</span>
+content-type: <span class="val">text/html; charset=utf-8</span>
+server: <span class="val">GitHub.com</span>
+strict-transport-security: <span class="val">max-age=31536000</span>
+x-content-type-options: <span class="val">nosniff</span>
+x-frame-options: <span class="val">deny</span>
+cache-control: <span class="val">max-age=600</span>
+
+<span class="cmt"># 200 = OK
+# HSTS enforces HTTPS for 1 year
+# x-frame-options blocks clickjacking</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    Aidan Douglas · Computer Networking · Spring 2026 · Dr. Roya Hosseini
+  </footer>
+
+</body>
+</html>
